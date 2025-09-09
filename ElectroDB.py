@@ -22,7 +22,7 @@ from scipy.stats import linregress, t
 from io import BytesIO
 import xlsxwriter
 from fpdf import FPDF
-import openypyxl
+import openpyxl
 
 
 # =========================
