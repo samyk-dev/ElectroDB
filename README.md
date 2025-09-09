@@ -1,18 +1,18 @@
-# ElectroDB - Electrode Process Optimization Suite
+# ElectroDB  - Electrode Process Optimization Suite
 
 ElectroDB is a comprehensive Streamlit application for battery researchers to calculate electrode slurry recipes, manage electrode databases, and analyze coating uniformity.
 
 ## 📑 Table of Contents
 
 - [About the Project](#about-the-project)
-- [Support & Contact](#support--contact)
-- [Quick Start](#quick-start)
+- [Support & Contact](#-support--contact)
+- [Quick Start](#-quick-start-guide)
 - [Features](#features)
-- [User Guide](#user-guide)
+- [User Guide](#-user-guide)
 - [Database Management](#database-management)
 - [Pro Tips](#pro-tips)
-- [Troubleshooting](#troubleshooting)
-- [Workflow Integration](#workflow-integration)
+- [Troubleshooting](#-troubleshooting)
+- [Workflow Integration Suggestions](#workflow-integration-suggestions)
 - [Acknowledgements & Usage](#acknowledgments--usage)
 - [Connect & Learn More](#connect--learn-more)
 
@@ -22,7 +22,7 @@ ElectroDB is a comprehensive Streamlit application for battery researchers to ca
 
 ElectroDB is an ongoing free, open-source project maintained by Samy Kouidri, an undergraduate at the University of Chicago studying Molecular Chemical Engineering. As a scientist passionate about streamlining electrochemical research workflows, I apply mathematical rigor, scientific principles, and systematic problem-solving to develop structured tools that improve research processes and accelerate battery development.
 
-## Support & Contact
+## 📞 Support & Contact
 
 Have questions, suggestions, or found a bug?
 I'm dedicated to improving ElectroDB and welcome your feedback!
@@ -39,9 +39,9 @@ I'll do my best to:
 
 ---
 
-## Quick Start
+## 📋 Quick Start Guide
 
-### Web Version
+### 🌐 Web Version
 Ready to dive right in?
 Access the live web application instantly:
 
@@ -49,7 +49,7 @@ Access the live web application instantly:
 
 Click above to start using ElectroDB immediately in your browser!
 
-### Local Installation
+### 💻 Local Installation
 Prefer to run ElectroDB locally? Follow these steps:
 
 **Prerequisites:**
@@ -57,7 +57,7 @@ Prefer to run ElectroDB locally? Follow these steps:
 - pip (Python package manager)
 
 **Installation:**
-1. **Clone or download the ElectroDB code** to your local machine
+1. **Clone or download the ElectroDB.py code** to your local machine
 2. **Install required dependencies:**
    ```bash
    pip install streamlit pandas numpy matplotlib seaborn plotly scipy xlsxwriter fpdf openpyxl
@@ -102,7 +102,7 @@ Prefer to run ElectroDB locally? Follow these steps:
 
 ---
 
-## User Guide
+## 📋 User Guide
 
 ### First Time Setup
 1. **Create a database file**: In the sidebar, make sure the database file path is correct (default: `electrode_database.xlsx`)
@@ -177,9 +177,9 @@ Your electrode database includes:
 
 ---
 
-## Troubleshooting
+## ❗ Troubleshooting
 
-### Common Issues
+###  Common Issues
 
 1. **"Permission denied" error**:
    - Try a different filename in the sidebar
@@ -195,7 +195,7 @@ Your electrode database includes:
    - Make sure all required packages are installed
    - Check browser console for errors
 
-### Getting Help
+### 🆘 Getting Help
 If you encounter issues:
 1. Check that all dependencies are installed
 2. Ensure your Excel files have the correct column structure
@@ -204,7 +204,7 @@ If you encounter issues:
 
 ---
 
-## Workflow Integration
+## Workflow Integration Suggestions
 
 1. **Planning a new formulation?** → Use the Slurry Calculator to speed up calculations
 2. **Coating electrodes?** → Use the Blade Height Recommender to achieve specific mass loading targets
