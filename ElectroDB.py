@@ -22,6 +22,7 @@ from scipy.stats import linregress, t
 from io import BytesIO
 import xlsxwriter
 from fpdf import FPDF
+import openypyxl
 
 
 # =========================
@@ -232,10 +233,10 @@ def bytes_excel(df: pd.DataFrame, filename="export.xlsx") -> tuple[bytes, str]:
 def ensure_db_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Ensure database has all required columns with proper names"""
     cols = [
-        "Active Material", "Substrate", "Diameter (mm)", "Mass (g)",
-        "Solid %", "Blade Height (µm)", "Active Material %",
-        "Mass Loading (mg/cm²)", "Active ML (mg/cm²)", 
-        "Date Made", "Made By", "Notes"
+        "Electrode Type", "Active Material", "Substrate", "Tare Weight (mg/cm²)",
+        "Mass (g)", "Diameter (mm)", "Solid %", "Blade Height (µm)", "Active Material %",
+        "Binder Type", "Binder %", "Conductive Material", "Conductive %",
+        "Mass Loading (mg/cm²)", "Active ML (mg/cm²)", "Date Made", "Made By", "Notes"
     ]
     for c in cols:
         if c not in df.columns:
@@ -1402,34 +1403,15 @@ def coating_calibration_tool():
 # Electrode Database Manager
 # =========================
 
-def enforce_schema(df: pd.DataFrame) -> pd.DataFrame:
-    required_columns = [
-        "Active Material",
-        "Substrate Name",
-        "Substrate Tare (mg/cm²)",
-        "Diameter (mm)",
-        "Mass (g)",
-        "Solid %",
-        "Blade Height (µm)",
-        "Active Material %",
-        "Mass Loading (mg/cm²)",
-        "Active ML (mg/cm²)",
-        "Date Made",
-        "Made By",
-        "Notes"
-    ]
-    for col in required_columns:
-        if col not in df.columns:
-            df[col] = ""
-    df = df[required_columns]
-    return df
-
 def electrode_database_manager():
     st.title("🗄️ ElectroDB - Electrode Database Manager")
     st.caption("Streamlined electrode data management for battery researchers")
 
-    # Load database
-    db = load_database(db_file)
+    # Load database with session state persistence
+    if 'db' not in st.session_state:
+        st.session_state.db = load_database(db_file)
+    
+    db = st.session_state.db
 
     # Quick stats at the top
     if not db.empty:
@@ -1466,6 +1448,10 @@ def electrode_database_manager():
                 "mass": 0.02,
                 "solid_pct": 30.0,
                 "blade_height": 200.0,
+                "binder_type": "PVDF",
+                "binder_pct": 2.0,
+                "conductive_material": "Super P",
+                "conductive_pct": 2.0,
                 "date_made": datetime.now().date(),
                 "made_by": "",
                 "notes": ""
@@ -1574,6 +1560,28 @@ def electrode_database_manager():
                 blade_height = st.number_input("Blade Height (µm)",1.0,1000.0,st.session_state.form_data["blade_height"],1.0)
                 st.session_state.form_data["blade_height"] = blade_height
 
+        # --- Binder and Conductive Additives ---
+        with st.expander("🧪 Binder & Conductive Additives", expanded=False):
+            col1, col2 = st.columns(2)
+            with col1:
+                binder_type = st.text_input(
+                    "Binder Type", value=st.session_state.form_data["binder_type"], placeholder="e.g., PVDF, CMC/SBR"
+                )
+                st.session_state.form_data["binder_type"] = binder_type
+                binder_pct = st.number_input(
+                    "Binder %", 0.0, 100.0, st.session_state.form_data["binder_pct"], 0.1
+                )
+                st.session_state.form_data["binder_pct"] = binder_pct
+            with col2:
+                conductive_material = st.text_input(
+                    "Conductive Material", value=st.session_state.form_data["conductive_material"], placeholder="e.g., Super P, Carbon Black"
+                )
+                st.session_state.form_data["conductive_material"] = conductive_material
+                conductive_pct = st.number_input(
+                    "Conductive %", 0.0, 100.0, st.session_state.form_data["conductive_pct"], 0.1
+                )
+                st.session_state.form_data["conductive_pct"] = conductive_pct
+
         # --- Additional Info ---
         with st.expander("📋 Additional Information", expanded=False):
             col1, col2 = st.columns(2)
@@ -1587,8 +1595,6 @@ def electrode_database_manager():
                 st.session_state.form_data["notes"] = notes
 
         # --- Mass loading preview ---
-
-        # Initialize defaults
         area_cm2 = 0.0
         tare_mg_cm2 = 0.0
         total_ml = 0.0
@@ -1624,6 +1630,8 @@ def electrode_database_manager():
                 - Substrate mass: {substrate_mass_g*1000:.2f} mg
                 - Coating mass: {(mass-substrate_mass_g)*1000:.2f} mg
                 - Active material: {active_pct:.1f}% of coating
+                - Binder: {binder_pct:.1f}% ({binder_type})
+                - Conductive: {conductive_pct:.1f}% ({conductive_material})
                 """)
         except Exception as e:
             st.error(f"⚠️ Calculation error: {e}")
@@ -1642,6 +1650,7 @@ def electrode_database_manager():
                 "active_pct": 96.0, "electrode_type": "Cathode", "substrate": "Aluminum Foil",
                 "custom_substrate": False, "custom_substrate_name": "", "custom_tare": 4.163,
                 "diameter": 13.0, "mass": 0.02, "solid_pct": 30.0, "blade_height": 200.0,
+                "binder_type": "PVDF", "binder_pct": 2.0, "conductive_material": "Super P", "conductive_pct": 2.0,
                 "date_made": datetime.now().date(), "made_by": "", "notes": ""
             }
             st.rerun()
@@ -1670,6 +1679,10 @@ def electrode_database_manager():
                     "Solid %": solid_pct,
                     "Blade Height (µm)": blade_height,
                     "Active Material %": active_pct,
+                    "Binder Type": binder_type,
+                    "Binder %": binder_pct,
+                    "Conductive Material": conductive_material,
+                    "Conductive %": conductive_pct,
                     "Mass Loading (mg/cm²)": total_ml,
                     "Active ML (mg/cm²)": active_ml,
                     "Date Made": str(date_made),
@@ -1679,9 +1692,17 @@ def electrode_database_manager():
                 db_new = pd.concat([db, pd.DataFrame([new_row])], ignore_index=True)
                 db_new = ensure_db_columns(db_new)
                 save_database(db_new, db_file)
+                
+                # UPDATE THE SESSION STATE DATABASE
+                st.session_state.db = db_new
+                
                 st.success(f"✅ Added {active_material} electrode!")
                 with st.expander("📋 Added Details", expanded=False):
                     st.json(new_row)
+                    
+                # Force a rerun to refresh the view
+                st.rerun()
+                
             except Exception as e:
                 st.error(f"❌ Failed to add electrode: {str(e)}")
 
@@ -1707,7 +1728,8 @@ def electrode_database_manager():
             st.caption(f"Showing {len(filtered_db)} of {len(db)} electrodes")
             if not filtered_db.empty:
                 display_df = filtered_db.copy()
-                numeric_cols = ["Mass (g)", "Mass Loading (mg/cm²)", "Active ML (mg/cm²)", "Tare Weight (mg/cm²)"]
+                numeric_cols = ["Mass (g)", "Mass Loading (mg/cm²)", "Active ML (mg/cm²)", "Tare Weight (mg/cm²)", 
+                               "Binder %", "Conductive %", "Active Material %", "Solid %"]
                 for col in numeric_cols:
                     if col in display_df.columns:
                         display_df[col] = pd.to_numeric(display_df[col], errors="coerce").map(lambda x:f"{x:.3f}" if pd.notnull(x) else "")
@@ -1728,6 +1750,10 @@ def electrode_database_manager():
                                 row_idx=int(to_delete.split(":")[0].replace("Row ",""))
                                 db_updated=db.drop(row_idx).reset_index(drop=True)
                                 save_database(db_updated, db_file)
+                                
+                                # Update the session state after deletion
+                                st.session_state.db = db_updated
+                                
                                 st.success("✅ Deleted!")
                                 st.rerun()
                             except Exception as e:
@@ -1746,11 +1772,14 @@ def electrode_database_manager():
                     st.dataframe(new_db.head(3))
                     import_mode = st.radio("Mode:", ["Replace database", "Add to existing"])
                     if st.button("📥 Import"):
-                        if import_mode=="Replace database": save_database(new_db, db_file)
+                        if import_mode=="Replace database": 
+                            save_database(new_db, db_file)
+                            st.session_state.db = new_db  # Update session state
                         else:
                             combined_db=pd.concat([db,new_db],ignore_index=True)
                             combined_db=ensure_db_columns(combined_db)
                             save_database(combined_db, db_file)
+                            st.session_state.db = combined_db  # Update session state
                         st.rerun()
                 except Exception as e:
                     st.error(f"❌ Import failed: {e}")
@@ -1761,9 +1790,10 @@ def electrode_database_manager():
                 export_filtered=st.checkbox("Export filtered data only", value=False)
                 export_db = filtered_db if export_filtered and 'filtered_db' in locals() else db
                 export_columns=[
-                    "Electrode Type","Active Material","Substrate","Tare Weight (mg/cm²)",
-                    "Mass (g)","Diameter (mm)","Solid %","Blade Height (µm)","Active Material %",
-                    "Mass Loading (mg/cm²)","Active ML (mg/cm²)","Date Made","Made By","Notes"
+                    "Electrode Type", "Active Material", "Substrate", "Tare Weight (mg/cm²)",
+                    "Mass (g)", "Diameter (mm)", "Solid %", "Blade Height (µm)", "Active Material %",
+                    "Binder Type", "Binder %", "Conductive Material", "Conductive %",
+                    "Mass Loading (mg/cm²)", "Active ML (mg/cm²)", "Date Made", "Made By", "Notes"
                 ]
                 export_db = export_db.reindex(columns=export_columns)
                 try:
