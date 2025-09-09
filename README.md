@@ -27,7 +27,7 @@ ElectroDB is an ongoing free, open-source project maintained by Samy Kouidri, an
 Have questions, suggestions, or found a bug?
 I'm dedicated to improving ElectroDB and welcome your feedback!
 
-Email: samykouidri@gmail.com
+Email: skouidri@uchicago.edu
 Please include "ElectroDB" in the subject line for priority response
 
 I'll do my best to:
@@ -248,5 +248,3 @@ Access my Professional Background and Resume:
 
 Let's connect on Linkedin:
 [🔗 Samy Kouidri on LinkedIn](https://www.linkedin.com/in/samy-kouidri-55a799302/)
-
-**ElectroDB** - Streamlining battery electrode research and development!
