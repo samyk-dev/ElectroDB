@@ -13,6 +13,7 @@ ElectroDB is a comprehensive Streamlit application for battery researchers to ca
 - [Pro Tips](#pro-tips)
 - [Troubleshooting](#troubleshooting)
 - [Workflow Integration](#workflow-integration)
+- [Acknowledgements & Usage](#acknowledgments--usage)
 - [Connect & Learn More](#connect--learn-more)
 
 ---
@@ -214,10 +215,36 @@ If you encounter issues:
 
 ---
 
+## Acknowledgments & Usage
+
+### Feedback and Support
+
+If you find ElectroDB useful in your research, I would greatly appreciate:
+
+   - Feedback and suggestions for improvements
+
+   - Mention or reference if you use it in publications or presentations
+
+   - Credit if you build upon or adapt this work for similar projects
+
+### Special Thanks
+
+I would like to extend my sincere gratitude to:
+
+   - [Dr. Mitchell Kaiser](https://www.cei.washington.edu/people/mitchell-kaiser/) (Postdoctoral Scholar) for his invaluable guidance and mentorship throughout this project
+
+   - The University of Washington [Energy Materials Research Group](https://sites.uw.edu/junliuuwgroup/) (Prof. Jun Liu's group) for their input, testing, and help in refining the project
+
+   - All beta testers who provided feedback during development
+
+This tool was developed to serve the battery research community, and I hope it helps labs optimize their electrode workflows so researchers can focus on what matters most: building better batteries and advancing the bigger picture of energy storage solutions.
+
+---
+
 ## Connect & Learn More
 
 Access my Professional Background and Resume:
-[Download Samy Kouidri's Resume](https://docs.google.com/presentation/d/1_B3E1VeladcI55Si75HNcuhIB7MdSo0Gfo2sL5IAdNk/edit?usp=sharing)
+[Download Samy Kouidri's Resume](https://docs.google.com/presentation/d/1_B3E1VeladcI55Si75HNcuhIB7MdSo0Gfo2sL5IAdNk/export?format=pdf)
 
 Let's connect on Linkedin:
 [🔗 Samy Kouidri on LinkedIn](https://www.linkedin.com/in/samy-kouidri-55a799302/)
