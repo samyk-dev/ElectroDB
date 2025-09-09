@@ -1769,6 +1769,42 @@ def electrode_database_manager():
                 try:
                     new_db = pd.read_excel(uploaded_file)
                     new_db = ensure_db_columns(new_db)
+                    
+                    # AUTO-CALCULATE MISSING MASS LOADING AND ACTIVE ML VALUES
+                    st.info("🔍 Checking for missing mass loading values...")
+                    missing_ml_count = 0
+                    missing_active_ml_count = 0
+                    
+                    for idx, row in new_db.iterrows():
+                        # Check if Mass Loading is missing or invalid
+                        if (pd.isna(row.get("Mass Loading (mg/cm²)")) or 
+                            row.get("Mass Loading (mg/cm²)") == "" or
+                            float(row.get("Mass Loading (mg/cm²)", 0)) <= 0):
+                            
+                            # Calculate missing mass loading
+                            try:
+                                substrate_mass_g = get_substrate_mass_g(
+                                    row.get("Substrate", ""), 
+                                    row.get("Diameter (mm)", 13.0)
+                                )
+                                total_ml, active_ml = calc_mass_loading_total_and_active(
+                                    disk_mass_g=row.get("Mass (g)", np.nan),
+                                    diameter_mm=row.get("Diameter (mm)", 13.0),
+                                    substrate_mass_g=substrate_mass_g,
+                                    active_pct=row.get("Active Material %", np.nan),
+                                )
+                                if not np.isnan(total_ml):
+                                    new_db.at[idx, "Mass Loading (mg/cm²)"] = total_ml
+                                    missing_ml_count += 1
+                                if not np.isnan(active_ml):
+                                    new_db.at[idx, "Active ML (mg/cm²)"] = active_ml
+                                    missing_active_ml_count += 1
+                            except Exception as e:
+                                st.warning(f"Could not calculate ML for row {idx}: {e}")
+                    
+                    if missing_ml_count > 0 or missing_active_ml_count > 0:
+                        st.success(f"✅ Auto-calculated {missing_ml_count} Mass Loading and {missing_active_ml_count} Active ML values")
+                    
                     st.dataframe(new_db.head(3))
                     import_mode = st.radio("Mode:", ["Replace database", "Add to existing"])
                     if st.button("📥 Import"):
@@ -1783,7 +1819,7 @@ def electrode_database_manager():
                         st.rerun()
                 except Exception as e:
                     st.error(f"❌ Import failed: {e}")
-
+                    
         # Export
         with st.expander("📤 Export Database", expanded=True if not db.empty else False):
             if not db.empty:
