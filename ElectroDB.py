@@ -391,7 +391,7 @@ if st.sidebar.button("Create empty DB if missing"):
 # =========================
 tool = st.sidebar.radio(
     "Select Tool",
-    options=["Slurry Calculator", "Blade Height Recommender", "Capacity Match Tool", "Coating Calibration Tool", "Electrode Database Manager"],     format_func=lambda x: x,
+    options=["Electrode Database Manager", "Slurry Calculator", "Blade Height Recommender", "Capacity Match Tool", "Coating Calibration Tool"],     format_func=lambda x: x,
     index=0
 )
 
