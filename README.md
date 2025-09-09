@@ -205,7 +205,7 @@ If you encounter issues:
 # 📄 Connect & Learn More
 
 Access my Professional Background and Resume:
-[Download Samy Kouidri's Resume](https://docs.google.com/presentation/d/1_B3E1VeladcI55Si75HNcuhIB7MdSo0G)
+[Download Samy Kouidri's Resume](https://docs.google.com/presentation/d/1_B3E1VeladcI55Si75HNcuhIB7MdSo0Gfo2sL5IAdNk/edit?usp=sharing)
 
 Let's connect on Linkedin:
 [🔗 Samy Kouidri on LinkedIn](https://www.linkedin.com/in/samy-kouidri-55a799302/)
