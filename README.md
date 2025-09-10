@@ -27,8 +27,7 @@ ElectroDB is an ongoing free, open-source project maintained by Samy Kouidri, an
 Have questions, suggestions, or found a bug?
 I'm dedicated to improving ElectroDB and welcome your feedback!
 
-Email: skouidri@uchicago.edu
-Please include "ElectroDB" in the subject line for priority response
+Email me at skouidri@uchicago.edu and include "ElectroDB" in the subject line to ensure a priority response
 
 I'll do my best to:
 
@@ -102,7 +101,7 @@ Prefer to run ElectroDB locally? Follow these steps:
 
 ---
 
-## 📋 User Guide
+## User Guide
 
 ### First Time Setup
 1. **Create a database file**: In the sidebar, make sure the database file path is correct (default: `electrode_database.xlsx`)
@@ -198,9 +197,9 @@ Your electrode database includes:
 ### 🆘 Getting Help
 If you encounter issues:
 1. Check that all dependencies are installed
-2. Ensure your Excel files have the correct column structure
+2. Ensure your Excel files have the correct column structure and spelling
 3. Verify file permissions for database read/write
-4. If these fixes do not work, contact skouidri@uchicago.edu with "ElectroDB" in the subject line to get help, I will try to respond as soon as possible
+4. If these fixes do not work, contact skouidri@uchicago.edu with "ElectroDB" in the subject line to get help, and I will try to respond as soon as possible
 
 ---
 
