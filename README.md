@@ -22,7 +22,7 @@ ElectroDB is a comprehensive Streamlit application for battery researchers to ca
 
 ElectroDB is an ongoing free, open-source project maintained by Samy Kouidri, an undergraduate at the University of Chicago studying Molecular Chemical Engineering. As a scientist passionate about streamlining electrochemical research workflows, I apply mathematical rigor, scientific principles, and systematic problem-solving to develop structured tools that improve research processes and accelerate battery development.
 
-## 📞 Support & Contact
+## Support & Contact
 
 Have questions, suggestions, or found a bug?
 I'm dedicated to improving ElectroDB and welcome your feedback!
@@ -38,7 +38,7 @@ I'll do my best to:
 
 ---
 
-## 📋 Quick Start Guide
+## Quick Start Guide
 
 ### 🌐 Web Version
 Ready to dive right in?
