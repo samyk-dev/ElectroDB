@@ -2,7 +2,7 @@
 
 ElectroDB is a comprehensive Streamlit application for battery researchers to calculate electrode slurry recipes, manage electrode databases, and analyze coating uniformity.
 
-## 📑 Table of Contents
+## Table of Contents
 
 - [About the Project](#about-the-project)
 - [Support & Contact](#-support--contact)
