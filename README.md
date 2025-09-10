@@ -200,7 +200,7 @@ If you encounter issues:
 1. Check that all dependencies are installed
 2. Ensure your Excel files have the correct column structure
 3. Verify file permissions for database read/write
-4. If these fixes do not work, contact samykouidri@gmail.com with "ElectroDB" in the subject line to get help, I will try to respond as soon as possible
+4. If these fixes do not work, contact skouidri@uchicago.edu with "ElectroDB" in the subject line to get help, I will try to respond as soon as possible
 
 ---
 
