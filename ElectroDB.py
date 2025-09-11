@@ -292,15 +292,7 @@ def get_substrate_mass_g(substrate_str: str, diameter_mm: float) -> float:
 
 def plot_regression(x, y, xlabel="", ylabel="", material_label="", color='black',
                     target_y=None, recommended_x=None, x_is_ticks=False, alpha_ci=0.05):
-    """
-    Plots linear regression with:
-      - regression line spanning the full relevant x range
-      - confidence interval for the mean 
-      - prediction interval for new observations
-      - optional horizontal/vertical target lines
-      - automatic dynamic scaling to include targets or recommended values
-      - origin (0,0) always in view
-    """
+
     x = np.array(x)
     y = np.array(y)
     n = len(x)
@@ -462,7 +454,7 @@ def slurry_calculator():
             st.stop()
 
     # ===== Slurry Recipe & Masses =====
-    with st.expander("3️⃣ Slurry Recipe & Masses", expanded=True):
+    with st.expander("3️⃣ Slurry Recipe & Masses", expanded=False):
         # Calculate masses
         active_frac, carbon_frac, binder_frac = active_ratio/100, carbon_ratio/100, binder_ratio/100
         if target_mode == "Active Mass (g)":
@@ -502,7 +494,7 @@ def slurry_calculator():
         st.table(df_recipe)
 
     # ===== Slurry Dilution Tracker =====
-    with st.expander("4️⃣ Slurry Dilution Tracker", expanded=True):
+    with st.expander("4️⃣ Slurry Dilution Tracker", expanded=False):
         recipe = st.session_state.recipe
         total_solids = recipe["Total Solids (g)"]
         original_mass = recipe["Total Slurry Mass (g)"]
@@ -1510,6 +1502,28 @@ def electrode_database_manager():
                     "Active Material %", 0.0, 100.0, st.session_state.form_data["active_pct"], 0.1
                 )
                 st.session_state.form_data["active_pct"] = active_pct
+                
+        # --- Binder and Conductive Additives ---
+        with st.expander("🧪 Binder & Conductive Additives", expanded=False):
+            col1, col2 = st.columns(2)
+            with col1:
+                binder_type = st.text_input(
+                    "Binder Type", value=st.session_state.form_data["binder_type"], placeholder="e.g., PVDF, CMC/SBR"
+                )
+                st.session_state.form_data["binder_type"] = binder_type
+                binder_pct = st.number_input(
+                    "Binder %", 0.0, 100.0, st.session_state.form_data["binder_pct"], 0.1
+                )
+                st.session_state.form_data["binder_pct"] = binder_pct
+            with col2:
+                conductive_material = st.text_input(
+                    "Conductive Material", value=st.session_state.form_data["conductive_material"], placeholder="e.g., Super P, Carbon Black"
+                )
+                st.session_state.form_data["conductive_material"] = conductive_material
+                conductive_pct = st.number_input(
+                    "Conductive %", 0.0, 100.0, st.session_state.form_data["conductive_pct"], 0.1
+                )
+                st.session_state.form_data["conductive_pct"] = conductive_pct
 
         # --- Substrate Properties ---
         with st.expander("🗃️ Substrate Properties", expanded=False):
@@ -1560,28 +1574,6 @@ def electrode_database_manager():
                 blade_height = st.number_input("Blade Height (µm)",1.0,1000.0,st.session_state.form_data["blade_height"],1.0)
                 st.session_state.form_data["blade_height"] = blade_height
 
-        # --- Binder and Conductive Additives ---
-        with st.expander("🧪 Binder & Conductive Additives", expanded=False):
-            col1, col2 = st.columns(2)
-            with col1:
-                binder_type = st.text_input(
-                    "Binder Type", value=st.session_state.form_data["binder_type"], placeholder="e.g., PVDF, CMC/SBR"
-                )
-                st.session_state.form_data["binder_type"] = binder_type
-                binder_pct = st.number_input(
-                    "Binder %", 0.0, 100.0, st.session_state.form_data["binder_pct"], 0.1
-                )
-                st.session_state.form_data["binder_pct"] = binder_pct
-            with col2:
-                conductive_material = st.text_input(
-                    "Conductive Material", value=st.session_state.form_data["conductive_material"], placeholder="e.g., Super P, Carbon Black"
-                )
-                st.session_state.form_data["conductive_material"] = conductive_material
-                conductive_pct = st.number_input(
-                    "Conductive %", 0.0, 100.0, st.session_state.form_data["conductive_pct"], 0.1
-                )
-                st.session_state.form_data["conductive_pct"] = conductive_pct
-
         # --- Additional Info ---
         with st.expander("📋 Additional Information", expanded=False):
             col1, col2 = st.columns(2)
@@ -1620,7 +1612,7 @@ def electrode_database_manager():
             with col1: st.metric("Total ML", f"{total_ml:.2f} mg/cm²")
             with col2: st.metric("Active ML", f"{active_ml:.2f} mg/cm²")
             with col3: st.metric("Area", f"{area_cm2:.3f} cm²")
-            with st.expander("📊 Calculation Details", expanded=False):
+            with st.expander("Calculation Details", expanded=False):
                 st.info(f"""
                 **Calculation Summary:**
                 - Substrate: {substrate_display}
@@ -1710,7 +1702,7 @@ def electrode_database_manager():
     with tab2:
         st.subheader("📋 Database Contents")
         if db.empty:
-            st.info("🔭 No electrodes yet. Add some in the 'Add Electrodes' tab!")
+            st.info("No electrodes yet. Add some in the 'Add Electrodes' tab!")
         else:
             # Filters
             with st.expander("🔍 Filters", expanded=False):
@@ -1843,11 +1835,11 @@ def electrode_database_manager():
                 except Exception as e:
                     st.error(f"❌ Export failed: {e}")
             else:
-                st.info("🔭 No data to export")
+                st.info("❌ No data to export")
 
         # Statistics
         if not db.empty:
-            with st.expander("📊 Database Statistics", expanded=False):
+            with st.expander("Database Statistics", expanded=False):
                 col1,col2=st.columns(2)
                 with col1:
                     st.markdown("**Materials:**")
@@ -1864,11 +1856,11 @@ def electrode_database_manager():
 # =========================
 if tool == "Slurry Calculator":
     slurry_calculator()
+elif tool == "Electrode Database Manager":
+    electrode_database_manager()
 elif tool == "Blade Height Recommender":
     blade_height_recommender()
 elif tool == "Capacity Match Tool":
     capacity_match_tool()
 elif tool == "Coating Calibration Tool":
     coating_calibration_tool()
-elif tool == "Electrode Database Manager":
-    electrode_database_manager()
