@@ -842,8 +842,35 @@ def capacity_match_tool():
     side_known = st.selectbox("Known side", ["Anode", "Cathode"])
     side_target = "Cathode" if side_known == "Anode" else "Anode"
 
-    # Known inputs
-    known_material = st.text_input(f"{side_known} material (e.g., LVP, Graphite, ...)", value="LVP" if side_known=="Cathode" else "Graphite")
+    # Data source selector - moved up to determine material options
+    src = st.radio("Data source", ["Use Database", "Use Built-in Dataset"], index=0, horizontal=True)
+
+    # Known inputs - material selection based on data source
+    if src == "Use Database" and not db.empty:
+        # Get available materials from database
+        available_materials = sorted([m for m in db["Active Material"].dropna().unique() if str(m).strip()])
+        if not available_materials:
+            st.error("No materials found in database. Add some electrodes first.")
+            return
+            
+        known_material = st.selectbox(
+            f"{side_known} material", 
+            available_materials,
+            index=0
+        )
+    else:
+        # Use built-in dataset materials
+        if side_known == "Cathode":
+            available_materials = list(CATHODE_DATA.keys())
+        else:
+            available_materials = list(ANODE_DATA.keys())
+            
+        known_material = st.selectbox(
+            f"{side_known} material", 
+            available_materials,
+            index=0
+        )
+
     known_active_ratio = MATERIAL_ACTIVE_RATIOS.get(known_material, 0.96 if side_known=="Cathode" else 0.80)
     known_ml = st.number_input(f"{side_known} Active Mass Loading (mg/cm²)", 0.0, 100.0, value=2.0, step=0.01)
     known_specific_capacity = st.number_input(f"{side_known} Specific Capacity (mAh/g)", 0.0, 1000.0, value=100.0, step=0.1)
@@ -854,8 +881,32 @@ def capacity_match_tool():
     else:
         capacity_ratio = st.number_input("Cathode/Anode ratio (P/N)", 0.1, 5.0, value=1.0, step=0.01, format="%.3f")
 
-    # Target side properties
-    target_material = st.text_input(f"{side_target} material", value="Graphite" if side_target=="Anode" else "LVP")
+    # Target side properties - material selection based on data source
+    if src == "Use Database" and not db.empty:
+        # Get available materials from database for target side
+        available_target_materials = sorted([m for m in db["Active Material"].dropna().unique() if str(m).strip()])
+        if not available_target_materials:
+            st.error("No materials found in database for target side.")
+            return
+            
+        target_material = st.selectbox(
+            f"{side_target} material", 
+            available_target_materials,
+            index=min(len(available_target_materials)-1, 0)  # Safe index selection
+        )
+    else:
+        # Use built-in dataset materials for target side
+        if side_target == "Cathode":
+            available_target_materials = list(CATHODE_DATA.keys())
+        else:
+            available_target_materials = list(ANODE_DATA.keys())
+            
+        target_material = st.selectbox(
+            f"{side_target} material", 
+            available_target_materials,
+            index=0
+        )
+
     target_active_ratio = MATERIAL_ACTIVE_RATIOS.get(target_material, 0.96 if side_target=="Cathode" else 0.80)
     target_specific_capacity = st.number_input(f"{side_target} Specific Capacity (mAh/g)", 0.0, 1000.0, value=350.0 if side_target=="Anode" else 120.0, step=0.1)
 
@@ -871,20 +922,12 @@ def capacity_match_tool():
 
     # Now estimate blade height for the target
     st.subheader("Estimate target blade height from dataset")
-    src = st.radio("Data source", ["Use Database", "Use Built-in Dataset"], index=0, horizontal=True)
 
     if src == "Use Database":
         if db.empty:
             st.warning("Database empty. Use Electrode Database Manager to add data.")
             return
 
-        # Simplified material selection
-        available_materials = [m for m in db["Active Material"].dropna().unique() if str(m).strip().lower() == target_material.strip().lower()]
-        
-        if not available_materials:
-            st.error(f"Material '{target_material}' not found in database. Available materials: {list(db['Active Material'].dropna().unique())}")
-            return
-            
         # Auto-calculate missing mass loadings
         db_work = db.copy()
         missing_ml = db_work["Active ML (mg/cm²)"].isna()
@@ -939,7 +982,7 @@ def capacity_match_tool():
             st.error("Regression invalid. Cannot recommend height.")
 
     else:
-        # Keep the existing built-in data code unchanged
+        # Built-in dataset code
         if side_target == "Cathode":
             if target_material not in CATHODE_DATA:
                 st.error("Target material not found in built-in cathode dataset.")
