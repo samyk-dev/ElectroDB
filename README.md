@@ -5,14 +5,15 @@ ElectroDB is a comprehensive Streamlit application for battery researchers to ca
 ## Table of Contents
 
 - [About the Project](#about-the-project)
-- [Support & Contact](#-support--contact)
-- [Quick Start](#-quick-start-guide)
+- [Support & Contact](#support--contact)
+- [Quick Start](#quick-start-guide)
 - [Features](#features)
-- [User Guide](#-user-guide)
+- [User Guide](#user-guide)
 - [Database Management](#database-management)
 - [Pro Tips](#pro-tips)
 - [Troubleshooting](#-troubleshooting)
 - [Workflow Integration Suggestions](#workflow-integration-suggestions)
+- [Planned Updates](#planned-updates)
 - [Acknowledgements & Usage](#acknowledgments--usage)
 - [Connect & Learn More](#connect--learn-more)
 
@@ -212,6 +213,15 @@ If you encounter issues:
 5. **Optimizing the manufacturing process?** → Record parameters in Database Manager to build knowledge over time
 6. **Balancing electrodes for new coin cells?** → Use the Capacity Match Tool
 
+---
+## Planned Updates
+
+Some plans for expanding the project include
+
+   - Creating unique ID system to create a scalable electrode database
+   - Improving functionality of the Blade Height recommendation to tailor desired CI and PI
+   - Improve Database manager to support multiple components (e.g. multiple binder types simultaneously) for electrode categorization
+     
 ---
 
 ## Acknowledgments & Usage
